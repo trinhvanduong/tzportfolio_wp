@@ -132,6 +132,7 @@ if ( ! class_exists( 'tp\admin\controllers\Admin_Menu' ) ) {
 		function secondary_menu_items() {
 			add_submenu_page( $this->slug, __( 'Posts', 'tz-portfolio' ), __( 'Posts', 'tz-portfolio' ), 'edit_tp_posts', 'edit.php?post_type=tp_post', '' );
 			add_submenu_page( $this->slug, __( 'Categories', 'tz-portfolio' ), __( 'Categories', 'tz-portfolio' ), 'edit_tp_posts', 'edit-tags.php?taxonomy=tp_category&post_type=tp_post', '' );
+			add_submenu_page( $this->slug, __( 'Tags', 'tz-portfolio' ), __( 'Tags', 'tz-portfolio' ), 'edit_tp_posts', 'edit-tags.php?taxonomy=tp_tag&post_type=tp_post', '' );
 			add_submenu_page(
 				$this->slug,
 				esc_html__( 'ACL Manager',  'tz-portfolio' ), /*page title*/

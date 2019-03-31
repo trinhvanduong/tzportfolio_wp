@@ -32,6 +32,7 @@ if ( ! class_exists( 'tp\admin\Admin' ) ) {
 			$this->templates_path = tp_path . 'includes/admin/templates/';
 
 			add_filter( 'admin_body_class', array( &$this, 'admin_body_class' ), 999 );
+            add_action( 'restrict_manage_posts', array( &$this, 'filter_portfolio_by_taxonomies' ) , 10, 2);
 			add_action( 'tp_roles_add_meta_boxes', array( &$this, 'add_metabox_role' ) );
 		}
 
@@ -48,6 +49,46 @@ if ( ! class_exists( 'tp\admin\Admin' ) ) {
 			}
 			return $classes;
 		}
+
+        /**
+         * Filter taxonomies on post view
+         * @param $post_type
+         * @param $which
+         */
+        function filter_portfolio_by_taxonomies( $post_type, $which ) {
+
+            // Apply this only on a specific post type
+            if ( 'tp_post' !== $post_type )
+                return;
+
+            // A list of taxonomy slugs to filter by
+            $taxonomies = array( 'tp_category', 'tp_tag' );
+
+            foreach ( $taxonomies as $taxonomy_slug ) {
+
+                // Retrieve taxonomy data
+                $taxonomy_obj = get_taxonomy( $taxonomy_slug );
+                $taxonomy_name = $taxonomy_obj->labels->name;
+
+                // Retrieve taxonomy terms
+                $terms = get_terms( $taxonomy_slug );
+
+                // Display filter HTML
+                echo "<select name='{$taxonomy_slug}' id='{$taxonomy_slug}' class='postform'>";
+                echo '<option value="">' . sprintf( esc_html__( 'Show All %s', 'tz-portfolio' ), $taxonomy_name ) . '</option>';
+                foreach ( $terms as $term ) {
+                    printf(
+                        '<option value="%1$s" %2$s>%3$s (%4$s)</option>',
+                        $term->slug,
+                        ( ( isset( $_GET[$taxonomy_slug] ) && ( $_GET[$taxonomy_slug] == $term->slug ) ) ? ' selected="selected"' : '' ),
+                        $term->name,
+                        $term->count
+                    );
+                }
+                echo '</select>';
+            }
+
+        }
 
 		/**
 		 * Add role metabox
