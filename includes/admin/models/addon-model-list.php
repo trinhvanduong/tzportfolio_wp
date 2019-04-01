@@ -11,16 +11,11 @@ Domain Path: /languages
 */
 namespace tp\admin\models;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-if ( ! class_exists( 'tp\admin\models\ACL_Model_ListTable' ) ) {
+
+if ( ! class_exists( 'tp\admin\models\Addon_Model_List' ) ) {
 	if( ! class_exists( 'WP_List_Table' ) )
 		require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-
-	/**
-	 * Class TP_ACL_Model_List_Table
-	 */
-	class ACL_Model_ListTable extends \WP_List_Table {
-
-
+	class Addon_Model_List extends \WP_List_Table {
 		/**
 		 * @var string
 		 */

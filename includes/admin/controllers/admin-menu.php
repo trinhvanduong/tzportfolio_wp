@@ -39,7 +39,7 @@ if ( ! class_exists( 'tp\admin\controllers\Admin_Menu' ) ) {
 		function __construct() {
 			add_action( 'admin_menu', array( &$this, 'primary_admin_menu' ), 0 );
 			add_action( 'admin_menu', array( &$this, 'secondary_menu_items' ), 1000 );
-			add_action( 'admin_menu', array( &$this, 'extension_menu' ), 9999 );
+			add_action( 'admin_menu', array( &$this, 'addon_menu' ), 9999 );
             parent::__construct();
 //			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1000 );
 		}
@@ -122,7 +122,7 @@ if ( ! class_exists( 'tp\admin\controllers\Admin_Menu' ) ) {
 
 			add_action( 'load-' . $this->pagehook, array( &$this, 'on_load_page' ) );
 
-			add_submenu_page( $this->slug, __( 'Dashboard', 'tz-portfolio' ), __( 'Dashboard', 'tz-portfolio' ), 'read', $this->slug, array( &$this, 'admin_page' ) );
+			add_submenu_page( $this->slug, __( 'Dashboard', 'tz-portfolio' ), __( 'Dashboard', 'tz-portfolio' ), 'read', $this->slug, array( &$this, 'dashboard_page' ) );
 		}
 
 
@@ -187,8 +187,8 @@ if ( ! class_exists( 'tp\admin\controllers\Admin_Menu' ) ) {
 		/**
 		 * Extension menu
 		 */
-		function extension_menu() {
-			add_submenu_page( $this->slug, __( 'Addons', 'tz-portfolio' ), '<span style="color: #00B9EB">' .__( 'Addons', 'tz-portfolio' ) . '</span>', 'manage_options', $this->slug . '-extensions', array( &$this, 'admin_page' ) );
+		function addon_menu() {
+			add_submenu_page( $this->slug, __( 'Add-ons', 'tz-portfolio' ), '<span style="color: #00B9EB">' .__( 'Add-ons', 'tz-portfolio' ) . '</span>', 'manage_options', $this->slug . '-addon', array( &$this, 'addon_page' ) );
 		}
 
 
@@ -246,52 +246,46 @@ if ( ! class_exists( 'tp\admin\controllers\Admin_Menu' ) ) {
 		/**
 		 * Which admin page to show?
 		 */
-		function admin_page() {
+		function dashboard_page() {
+			?>
+            <div id="tp-metaboxes-general" class="wrap">
 
-			$page = $_REQUEST['page'];
-			if ( $page == 'tzportfolio' && ! isset( $_REQUEST['tp-addon'] ) ) { ?>
+                <h1>TZ Portfolio <sup><?php echo tp_version; ?></sup></h1>
 
-				<div id="tp-metaboxes-general" class="wrap">
+				<?php wp_nonce_field( 'tp-metaboxes-general' ); ?>
+				<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
+				<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
 
-					<h1>TZ Portfolio <sup><?php echo tp_version; ?></sup></h1>
+                <input type="hidden" name="action" value="save_tp_metaboxes_general" />
 
-					<?php wp_nonce_field( 'tp-metaboxes-general' ); ?>
-					<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
-					<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
+                <div id="dashboard-widgets-wrap">
 
-					<input type="hidden" name="action" value="save_tp_metaboxes_general" />
+                    <div id="dashboard-widgets" class="metabox-holder tp-metabox-holder">
 
-					<div id="dashboard-widgets-wrap">
+                        <div id="postbox-container-1" class="postbox-container"><?php do_meta_boxes( $this->pagehook, 'core', null );  ?></div>
+                        <div id="postbox-container-2" class="postbox-container"><?php do_meta_boxes( $this->pagehook, 'normal', null ); ?></div>
+                        <div id="postbox-container-3" class="postbox-container"><?php do_meta_boxes( $this->pagehook, 'side', null ); ?></div>
 
-						<div id="dashboard-widgets" class="metabox-holder tp-metabox-holder">
+                    </div>
 
-							<div id="postbox-container-1" class="postbox-container"><?php do_meta_boxes( $this->pagehook, 'core', null );  ?></div>
-							<div id="postbox-container-2" class="postbox-container"><?php do_meta_boxes( $this->pagehook, 'normal', null ); ?></div>
-							<div id="postbox-container-3" class="postbox-container"><?php do_meta_boxes( $this->pagehook, 'side', null ); ?></div>
+                </div>
 
-						</div>
+            </div>
+            <div class="tp-admin-clear"></div>
 
-					</div>
-
-				</div>
-				<div class="tp-admin-clear"></div>
-
-				<script type="text/javascript">
-					//<![CDATA[
-					jQuery(document).ready( function($) {
-						// postboxes setup
-						postboxes.add_postbox_toggles('<?php echo $this->pagehook; ?>');
-					});
-					//]]>
-				</script>
-
-			<?php } elseif ( $page == 'tzportfolio-extensions' ) {
-
-				include_once TPApp()->admin()->templates_path . 'extensions.php';
-
-			}
-
+            <script type="text/javascript">
+                //<![CDATA[
+                jQuery(document).ready( function($) {
+                    // postboxes setup
+                    postboxes.add_postbox_toggles('<?php echo $this->pagehook; ?>');
+                });
+                //]]>
+            </script>
+			<?php
 		}
 
+		function addon_page() {
+            new Addon();
+        }
 	}
 }

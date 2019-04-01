@@ -1,4 +1,14 @@
 <?php
+/*
+Plugin Name: TZ Portfolio
+Plugin URI: https://www.tzportfolio.com/
+Description: All you need for a Portfolio here. TZ Portfolio+ is an open source advanced portfolio plugin for WordPress
+Version: 1.0.0
+Author: TemPlaza, Sonny
+Author URI: https://www.tzportfolio.com/
+Text Domain: tz-portfolio
+Domain Path: /languages
+*/
 namespace tp\admin\models;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
