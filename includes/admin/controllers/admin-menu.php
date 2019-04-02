@@ -118,7 +118,7 @@ if ( ! class_exists( 'tp\admin\controllers\Admin_Menu' ) ) {
 		 * Setup admin menu
 		 */
 		function primary_admin_menu() {
-			$this->pagehook = add_menu_page( __( 'TZ Portfolio', 'tz-portfolio' ), __( 'TZ Portfolio', 'tz-portfolio' ), 'read', $this->slug, array( &$this, 'admin_page' ), 'dashicons-schedule', '25');
+			$this->pagehook = add_menu_page( __( 'TZ Portfolio', 'tz-portfolio' ), __( 'TZ Portfolio', 'tz-portfolio' ), 'read', $this->slug, array( &$this, 'dashboard_page' ), 'dashicons-schedule', '25');
 
 			add_action( 'load-' . $this->pagehook, array( &$this, 'on_load_page' ) );
 
@@ -285,7 +285,8 @@ if ( ! class_exists( 'tp\admin\controllers\Admin_Menu' ) ) {
 		}
 
 		function addon_page() {
-            new Addon();
+            $addonApp   =   \TPApp()->call('addon');
+            $addonApp->instance();
         }
 	}
 }

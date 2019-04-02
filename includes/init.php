@@ -273,6 +273,7 @@ if ( ! class_exists( 'TPApp' ) ) {
 				$this->admin();
 			} elseif ( $this->is_request( 'admin' ) ) {
 				$this->admin();
+				$this->addon();
 				$this->admin_menu();
 				$this->admin_enqueue();
 			} elseif ( $this->is_request( 'frontend' ) ) {
@@ -318,6 +319,18 @@ if ( ! class_exists( 'TPApp' ) ) {
 				$this->classes['admin'] = new tp\admin\Admin();
 			}
 			return $this->classes['admin'];
+		}
+
+		/**
+		 * @since 2.0
+		 *
+		 * @return tp\admin\Admin()
+		 */
+		function addon() {
+			if ( empty( $this->classes['addon'] ) ) {
+				$this->classes['addon'] = new tp\admin\controllers\Addon();
+			}
+			return $this->classes['addon'];
 		}
 
 		/**

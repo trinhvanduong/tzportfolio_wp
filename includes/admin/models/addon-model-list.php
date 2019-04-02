@@ -71,17 +71,6 @@ if ( ! class_exists( 'tp\admin\models\Addon_Model_List' ) ) {
 
 
 		/**
-		 * @param callable $name
-		 * @param array $arguments
-		 *
-		 * @return mixed
-		 */
-//	function __call( $name, $arguments ) {
-//		return call_user_func_array( array( $this, $name ), $arguments );
-//	}
-
-
-		/**
 		 *
 		 */
 		function prepare_items() {
@@ -149,7 +138,7 @@ if ( ! class_exists( 'tp\admin\models\Addon_Model_List' ) ) {
 		 *
 		 * @return $this
 		 */
-		function set_columns( $args = array() ) {
+		function set_columns( $args = array()  ) {
 			if( count( $this->bulk_actions ) ) {
 				$args = array_merge( array( 'cb' => '<input type="checkbox" />' ), $args );
 			}
@@ -221,26 +210,18 @@ if ( ! class_exists( 'tp\admin\models\Addon_Model_List' ) ) {
 		 */
 		function column_title( $item ) {
 			$actions = array();
-
-			$actions['edit'] = '<a href="admin.php?page=tzportfolio-acl&action=edit&id=' . $item['key'] . '">' . __( 'Edit', 'tz-portfolio' ). '</a>';
-
-			if ( ! empty( $item['_tp_is_custom'] ) ) {
-				$actions['delete'] = '<a href="admin.php?page=tzportfolio-acl&action=delete&id=' . $item['key'] . '&_wpnonce=' . wp_create_nonce( 'tp_role_delete' . $item['key'] . get_current_user_id() ) . '" onclick="return confirm( \'' . __( 'Are you sure you want to delete this role?', 'tz-portfolio' ) . '\' );">' . __( 'Delete', 'tz-portfolio' ). '</a>';
+			$addonApp=  \TPApp()->call('addon');
+			if ($addonApp->is_plugin_active($item['key'])) {
+				$actions['deactivate'] = '<a href="admin.php?page=tzportfolio-addon&action=deactivate&id=' . $item['key'] . '&_wpnonce=' . wp_create_nonce( 'tp_addon_deactivate' . $item['key'] . get_current_user_id() ) . '">' . __( 'Deactivate', 'tz-portfolio' ). '</a>';
 			} else {
-				$role_meta = get_option( "tp_role_{$item['key']}_meta" );
-				if ( ! empty( $role_meta ) ) {
-					$roleApp            =   \TPApp()->call('roles');
-					$role_meta_default  =   $roleApp->get_default($item['key']);
-					foreach ($role_meta_default as $key => $value) {
-						if (!isset($role_meta[$key]) || $role_meta[$key] != $value) {
-							$actions['reset'] = '<a href="admin.php?page=tzportfolio-acl&action=reset&id=' . $item['key'] . '&_wpnonce=' . wp_create_nonce( 'tp_role_reset' . $item['key'] . get_current_user_id() ) . '" onclick="return confirm( \'' . __( 'Are you sure you want to reset TP role meta?', 'tz-portfolio' ) . '\' );">' . __( 'Reset default role settings', 'tz-portfolio' ). '</a>';
-							break;
-						}
-					}
-				}
+				$actions['activate'] = '<a href="admin.php?page=tzportfolio-addon&action=activate&id=' . $item['key'] . '&_wpnonce=' . wp_create_nonce( 'tp_addon_activate' . $item['key'] . get_current_user_id() ) . '">' . __( 'Activate', 'tz-portfolio' ). '</a>';
 			}
 
-			return sprintf('%1$s %2$s', '<strong><a class="row-title" href="admin.php?page=tzportfolio-acl&action=edit&id=' . $item['key'] . '">' . $item['name'] . '</a></strong>', $this->row_actions( $actions ) );
+			$actions['settings'] = '<a href="admin.php?page=tzportfolio-addon&action=settings&id=' . $item['key'] . '">' . __( 'Settings', 'tz-portfolio' ). '</a>';
+			$actions['delete'] = '<a href="admin.php?page=tzportfolio-addon&action=delete&id=' . $item['key'] . '&_wpnonce=' . wp_create_nonce( 'tp_addon_delete' . $item['key'] . get_current_user_id() ) . '" onclick="return confirm( \'' . __( 'Are you sure you want to delete this addon?', 'tz-portfolio' ) . '\' );">' . __( 'Delete', 'tz-portfolio' ). '</a>';
+
+
+			return sprintf('%1$s %2$s', '<strong><a class="row-title" href="admin.php?page=tzportfolio-addon&action=settings&id=' . $item['key'] . '">' . $item['Name'] . '</a></strong>', $this->row_actions( $actions ) );
 		}
 
 		/**
@@ -248,32 +229,26 @@ if ( ! class_exists( 'tp\admin\models\Addon_Model_List' ) ) {
 		 *
 		 * @return string
 		 */
-		function column_roleid( $item ) {
-			return ! empty( $item['_tp_is_custom'] ) ? 'tp_' . $item['key'] : $item['key'];
+		function column_type( $item ) {
+			return ! empty( $item['Type'] ) ? $item['Type'] : '-';
 		}
-
 
 		/**
 		 * @param $item
+		 *
+		 * @return string
 		 */
-		function column_core( $item ) {
-			echo ! empty( $item['_tp_is_custom'] ) ? __( 'Yes', 'tz-portfolio' ) : __( 'No', 'tz-portfolio' );
+		function column_element( $item ) {
+			return ! empty( $item['Element'] ) ? $item['Element'] : '-';
 		}
-
 
 		/**
 		 * @param $item
+		 *
+		 * @return string
 		 */
-		function column_admin_access( $item ) {
-			echo ! empty( $item['_tp_can_access_wpadmin'] ) ? __( 'Yes', 'tz-portfolio' ) : __( 'No', 'tz-portfolio' );
-		}
-
-
-		/**
-		 * @param $item
-		 */
-		function column_priority( $item ) {
-			echo ! empty( $item['_tp_priority'] ) ? $item['_tp_priority'] : '-';
+		function column_version( $item ) {
+			return ! empty( $item['Version'] ) ? $item['Version'] : '-';
 		}
 
 
