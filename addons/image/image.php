@@ -3,7 +3,7 @@
  Plugin Name: Image
  Plugin URI: https://www.tzportfolio.com/
  Description: This add-on helps you create Image Article for your Portfolio gallery.
- Author: TZ Portfolio
+ Author: Sonny
  Version: 1.0
  Author URI: https://www.tzportfolio.com/
  Type: mediatype
@@ -12,11 +12,16 @@
  */
 
 // No direct access
-defined('_JEXEC') or die;
+if ( ! defined( 'ABSPATH' ) && !defined('_JEXEC') ) {
+	die();
+}
+if (defined('_JEXEC')) {
+	use Joomla\Filesystem\File;
+	jimport('joomla.filesytem.file');
+} elseif (defined( 'ABSPATH' )) {
 
-use Joomla\Filesystem\File;
+}
 
-jimport('joomla.filesytem.file');
 
 class PlgTZ_Portfolio_PlusMediaTypeImage extends TZ_Portfolio_PlusPlugin
 {

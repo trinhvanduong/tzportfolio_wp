@@ -96,7 +96,8 @@ if ( ! class_exists( 'tp\admin\controllers\Addon' ) ) {
 				'title'         => __( 'Add-on Name', 'tz-portfolio' ),
 				'type'          => __( 'Type', 'tz-portfolio' ),
 				'element'       => __( 'Element', 'tz-portfolio' ),
-				'version'       => __( 'Version', 'tz-portfolio' )
+				'version'       => __( 'Version', 'tz-portfolio' ),
+				'author'       => __( 'Author', 'tz-portfolio' )
 			) );
 
 			$this->list_table->set_sortable_columns( array(

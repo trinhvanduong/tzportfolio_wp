@@ -251,6 +251,15 @@ if ( ! class_exists( 'tp\admin\models\Addon_Model_List' ) ) {
 			return ! empty( $item['Version'] ) ? $item['Version'] : '-';
 		}
 
+		/**
+		 * @param $item
+		 *
+		 * @return string
+		 */
+		function column_author( $item ) {
+			return ! empty( $item['Author'] ) ? $item['Author'] : '-';
+		}
+
 
 		/**
 		 * @param array $attr
